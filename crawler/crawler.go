@@ -6,16 +6,24 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-func GetALLURL(doc *goquery.Document) error {
-	urls := doc.Find("a").Text()
-	fmt.Println(urls)
-	return nil
+type Link struct {
+	Url string
 }
 
-func GetDoc(url string) (*goquery.Document, error) {
+func GetALLURL(url string) ([]Link, error) {
 	doc, err := goquery.NewDocument(url)
 	if err != nil {
+		fmt.Println(err, doc)
 		return nil, err
 	}
-	return doc, nil
+	links := []Link{}
+	doc.Find("a").Each(func(i int, s *goquery.Selection) {
+		link, _ := s.Attr("href")
+		links = append(
+			links, Link{
+				Url: link,
+			},
+		)
+	})
+	return links, nil
 }
