@@ -3,6 +3,7 @@ package crawler
 import (
 	"reflect"
 	"testing"
+	"time"
 )
 
 func TestGetALLURL(t *testing.T) {
@@ -46,6 +47,45 @@ func TestGetALLURL(t *testing.T) {
 			}
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("GetALLURL() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSearchDataFromURL(t *testing.T) {
+	type args struct {
+		link Link
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    Link
+		wantErr bool
+	}{
+		{
+			name: "sample",
+			args: args{
+				link: Link{
+					Url: "http://example.com",
+				},
+			},
+			want: Link{
+				Url:   "http://example.com",
+				Title: "Example Domain",
+				Date:  time.Now().Unix(),
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := SearchDataFromURL(tt.args.link)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("SearchDataFromURL() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("SearchDataFromURL() = %v, want %v", got, tt.want)
 			}
 		})
 	}

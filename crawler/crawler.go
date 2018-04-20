@@ -2,12 +2,15 @@ package crawler
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
 type Link struct {
-	Url string
+	Url   string
+	Title string
+	Date  int64
 }
 
 func GetALLURL(url string) ([]Link, error) {
@@ -26,4 +29,15 @@ func GetALLURL(url string) ([]Link, error) {
 		)
 	})
 	return links, nil
+}
+
+func SearchDataFromURL(link Link) (Link, error) {
+	doc, err := goquery.NewDocument(link.Url)
+	if err != nil {
+		fmt.Println(err, doc)
+		return link, err
+	}
+	link.Title = doc.Find("title").Text()
+	link.Date = time.Now().Unix()
+	return link, nil
 }
