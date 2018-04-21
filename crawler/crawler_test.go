@@ -90,3 +90,41 @@ func TestSearchDataFromURL(t *testing.T) {
 		})
 	}
 }
+
+func TestGetAllText(t *testing.T) {
+	type args struct {
+		link Link
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    Link
+		wantErr bool
+	}{
+		{
+			name: "sample",
+			args: args{
+				link: Link{
+					Url: "http://example.com",
+				},
+			},
+			want: Link{
+				Url:  "http://example.com",
+				Text: "Example Domain     This domain is established to be used for illustrative examples in documents. You may use this     domain in examples without prior coordination or asking for permission.     More information...",
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := GetAllText(tt.args.link)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetAllText() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("GetAllText() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
