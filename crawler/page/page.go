@@ -6,6 +6,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"strings"
 	"fmt"
+	"regexp"
 )
 
 const (
@@ -86,12 +87,21 @@ func geturlfrompage(url string) ([]string, error) {
 		fmt.Println(err, doc)
 		return nil, err
 	}
-	var result []string{}
+	var result []string
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
 		link, _ := s.Attr("href")
-		result = append(
-			result, link,
-		)
+		r := regexp.MustCompile(`web-ext`)
+		r2 := regexp.MustCompile(`web-int`)
+		if r.MatchString(link) == true {
+			result = append(
+				result, link,
+			)
+		} else if r2.MatchString(link) == true{
+			result = append(
+				result, link,
+			)
+		}
+
 	})
 	return result, nil
 }
