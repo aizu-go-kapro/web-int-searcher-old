@@ -13,7 +13,8 @@ func Crawler() ([]page.Page, error) {
 	if err != nil {
 		log.Println(err)
 	}
-
+	// TODO
+	// PageID を登録
 	for _, page := range toppages {
 		crawle(page.Url, page.Title)
 	}

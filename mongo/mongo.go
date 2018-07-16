@@ -152,3 +152,18 @@ func UpdateDocument(document Document) error {
 	}
 	return nil
 }
+
+func GetDocumentByURL(url string) (Document, error) {
+	var document Document
+	session, err := mgo.Dial("mongodb://localhost/test")
+	if err != nil {
+		return document, err
+	}
+	defer session.Close()
+
+	err = session.DB("test").C("document").Find(bson.M{"url": url}).One(&document)
+	if err != nil {
+		return document, err
+	}
+	return document, nil
+}
