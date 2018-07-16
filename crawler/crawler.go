@@ -1,59 +1,57 @@
 package crawler
 
 import (
-	"fmt"
-	"strings"
-	"time"
+	"log"
 
-	"github.com/PuerkitoBio/goquery"
+	"github.com/aizu-go-kapro/web-int-searcher/crawler/page"
+	mgo "gopkg.in/mgo.v2"
 )
 
-type Link struct {
-	Url   string
-	Title string
-	Date  int64
-	Text  string
+var pages []page.Page
+
+func Crawler() {
+	toppages, err := page.LoadTopPage()
+	if err != nil {
+		log.Println(err)
+	}
+
+	for _, page := range toppages {
+		crawle(page.Url, page.Title)
+	}
+
+	session, err := mgo.Dial("mongodb://localhost/test")
+	if err != nil {
+		panic(err)
+	}
+	defer session.Close()
+
+	c := session.DB("test").C("data")
+	for _, page := range pages {
+		err := c.Insert(&page)
+		if err != nil {
+			panic(err)
+		}
+	}
 }
 
-func GetALLURL(url string) ([]Link, error) {
-	doc, err := goquery.NewDocument(url)
+func crawle(url, title string) error {
+	page := page.NewPage(url, title)
+	err := page.GetText()
 	if err != nil {
-		fmt.Println(err, doc)
-		return nil, err
+		return err
 	}
-	links := []Link{}
-	doc.Find("a").Each(func(i int, s *goquery.Selection) {
-		link, _ := s.Attr("href")
-		links = append(
-			links, Link{
-				Url: link,
-			},
-		)
-	})
-	return links, nil
-}
+	err = page.GetLink()
+	if err != nil {
+		return err
+	}
+	pages = append(pages, page)
+	if len(page.Tolink) == 0 {
+		return nil
+	}
+	for _, pageurl := range page.Tolink {
+		crawle(pageurl, "")
 
-func SearchDataFromURL(link Link) (Link, error) {
-	doc, err := goquery.NewDocument(link.Url)
-	if err != nil {
-		return link, err
 	}
-	link.Title = doc.Find("title").Text()
-	link.Date = time.Now().Unix()
-	return link, nil
-}
-func GetAllText(link Link) (Link, error) {
-	doc, err := goquery.NewDocument(link.Url)
-	if err != nil {
-		return link, err
-	}
-	link.Text = strings.Join(
-		strings.Split(
-			strings.TrimSpace(
-				doc.Find("body").Text(),
-			),
-			"\n",
-		), " ",
-	)
-	return link, nil
+
+	return nil
 }
