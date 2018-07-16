@@ -1,6 +1,8 @@
 package document_manegement
 
 import (
+	"log"
+
 	"github.com/aizu-go-kapro/web-int-searcher/crawler/page"
 	"github.com/aizu-go-kapro/web-int-searcher/mongo"
 )
@@ -8,12 +10,12 @@ import (
 func SaveDocument(document mongo.Document) error {
 	document2, err := mongo.GetDocumentByURL(document.URL)
 	if err != nil {
-		document.PageID = document2.PageID
 		err := mongo.UpdateDocument(document)
 		if err != nil {
 			return err
 		}
 	} else {
+		document.PageID = document2.PageID
 		err := mongo.SaveDocument(document)
 		if err != nil {
 			return err
@@ -24,13 +26,13 @@ func SaveDocument(document mongo.Document) error {
 }
 
 func SavePages(pages []page.Page) error {
-	for _, page := range pages {
-		document := mongo.Document{
+	for i, page := range pages {
+		log.Println(i*100/int(len(pages)), "%")
+		err := SaveDocument(mongo.Document{
 			page.Id,
 			page.Url,
 			page.Text,
-		}
-		err := SaveDocument(document)
+		})
 		if err != nil {
 			return err
 		}

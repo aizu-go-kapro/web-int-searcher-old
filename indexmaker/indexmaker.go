@@ -27,6 +27,7 @@ func MakeIndex(pages []page.Page) error {
 				}
 			} else {
 				index.PageIDs = append(index.PageIDs, page.Id)
+
 				err = mongo.UpdateIdex(index)
 				if err != nil {
 					return err
