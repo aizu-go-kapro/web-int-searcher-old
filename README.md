@@ -28,13 +28,6 @@ db.data.find().count()
 # mecab
 
 
-## install 
-```
-export CGO_LDFLAGS="-L/usr/local/bin/mecab -lmecab -lstdc++"
-export CGO_CFLAGS="-I/usr/local/bin/mecab/include"
-go get github.com/shogo82148/go-mecab
-```
-
 ## 
 
 ```
