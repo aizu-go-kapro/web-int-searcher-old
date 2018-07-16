@@ -2,16 +2,20 @@ package page
 
 import (
 	"encoding/json"
-	"io/ioutil"
-	"github.com/PuerkitoBio/goquery"
-	"strings"
 	"fmt"
+	"io/ioutil"
 	"regexp"
+	"strings"
+
+	"github.com/PuerkitoBio/goquery"
+	"github.com/yuin/charsetutil"
 )
 
 const (
 	ToppagePath = "toppage.json"
 )
+
+var sawPages []string
 
 type TopPages struct {
 	Url   string `json: "url"`
@@ -40,14 +44,14 @@ type Page struct {
 	ToBelink []string `json: "tobelink"`
 }
 
-func NewPage(url , title string) Page {
+func NewPage(url, title string) Page {
 	id := ""
 	return Page{
 		id, url, title, "", nil, nil,
 	}
 }
 
-func (p *Page) GetText() error{
+func (p *Page) GetText() error {
 	text, err := gettext(p.Url)
 	if err != nil {
 		return err
@@ -70,10 +74,14 @@ func gettext(url string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	text, err := charsetutil.DecodeString(doc.Find("body").Text(), "EUC-JP")
+	if err != nil {
+		return "", err
+	}
 	result := strings.Join(
 		strings.Split(
 			strings.TrimSpace(
-				doc.Find("body").Text(),
+				text,
 			),
 			"\n",
 		), " ",
@@ -82,6 +90,8 @@ func gettext(url string) (string, error) {
 }
 
 func geturlfrompage(url string) ([]string, error) {
+	sawPages = append(sawPages, url)
+
 	doc, err := goquery.NewDocument(url)
 	if err != nil {
 		fmt.Println(err, doc)
@@ -89,19 +99,27 @@ func geturlfrompage(url string) ([]string, error) {
 	}
 	var result []string
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
+
 		link, _ := s.Attr("href")
+
 		r := regexp.MustCompile(`web-ext`)
 		r2 := regexp.MustCompile(`web-int`)
-		if r.MatchString(link) == true {
-			result = append(
-				result, link,
-			)
-		} else if r2.MatchString(link) == true{
+		r3 := regexp.MustCompile(`u-aizu`)
+		r4 := regexp.MustCompile(`html`)
+		if (r.MatchString(link) == true || r2.MatchString(link) == true || r3.MatchString(link) == true) && contains(sawPages, link) != true && r4.MatchString(link) == true {
+			fmt.Println("link", link)
 			result = append(
 				result, link,
 			)
 		}
-
 	})
 	return result, nil
+}
+func contains(s []string, e string) bool {
+	for _, v := range s {
+		if e == v {
+			return true
+		}
+	}
+	return false
 }

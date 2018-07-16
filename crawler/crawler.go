@@ -2,13 +2,12 @@ package crawler
 
 import (
 	"fmt"
-	"github.com/aizu-go-kapro/web-int-searcher/crawler/page"
 	"log"
+
+	"github.com/aizu-go-kapro/web-int-searcher/crawler/page"
 )
 
 var pages []page.Page
-
-var sawPages []string
 
 func Crawler() {
 	toppages, err := page.LoadTopPage()
@@ -23,7 +22,7 @@ func Crawler() {
 	fmt.Println(pages)
 }
 
-func crawle(url, title string) error{
+func crawle(url, title string) error {
 	//for _, swapage := range  sawPages {
 	//	if swapage == url {
 	//		return nil
@@ -31,7 +30,6 @@ func crawle(url, title string) error{
 	//}
 	page := page.NewPage(url, title)
 	err := page.GetText()
-	sawPages = append(sawPages, page.Url)
 	if err != nil {
 		return err
 	}
@@ -40,14 +38,14 @@ func crawle(url, title string) error{
 		return err
 	}
 	pages = append(pages, page)
-
-	fmt.Println(pages)
-
-	for _, pageurl := range page.Tolink{
-		crawle(pageurl, "")
+	// fmt.Println(pages)
+	if len(page.Tolink) == 0 {
+		return nil
 	}
+	for _, pageurl := range page.Tolink {
+		crawle(pageurl, "")
 
-
+	}
 
 	return nil
 }
