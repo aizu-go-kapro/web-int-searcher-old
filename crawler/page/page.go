@@ -7,6 +7,8 @@ import (
 	"regexp"
 	"strings"
 
+	"path/filepath"
+
 	"github.com/PuerkitoBio/goquery"
 	"github.com/yuin/charsetutil"
 )
@@ -24,7 +26,11 @@ type TopPages struct {
 
 func LoadTopPage() ([]TopPages, error) {
 	p := []TopPages{}
-	bytes, err := ioutil.ReadFile("./" + ToppagePath)
+	zettaiPath, err := filepath.Abs("../crawler/" + ToppagePath)
+	if err != nil {
+		return p, err
+	}
+	bytes, err := ioutil.ReadFile(zettaiPath)
 	if err != nil {
 		return p, err
 	}

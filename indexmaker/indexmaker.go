@@ -1,6 +1,7 @@
 package indexmaker
 
 import (
+	"log"
 	"strings"
 
 	"github.com/aizu-go-kapro/web-int-searcher/crawler/page"
@@ -9,7 +10,8 @@ import (
 )
 
 func MakeIndex(pages []page.Page) error {
-	for _, page := range pages {
+	for i, page := range pages {
+		log.Println(i*100/int(len(pages)), "%")
 		page_words, err := ParseText(page.Text)
 		if err != nil {
 			return err
@@ -25,7 +27,6 @@ func MakeIndex(pages []page.Page) error {
 				}
 			} else {
 				index.PageIDs = append(index.PageIDs, page.Id)
-				// TODO page.IDを降るようにする
 				err = mongo.UpdateIdex(index)
 				if err != nil {
 					return err
