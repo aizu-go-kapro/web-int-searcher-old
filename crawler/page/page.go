@@ -107,7 +107,6 @@ func geturlfrompage(url string) ([]string, error) {
 		r3 := regexp.MustCompile(`u-aizu`)
 		r4 := regexp.MustCompile(`html`)
 		if (r.MatchString(link) == true || r2.MatchString(link) == true || r3.MatchString(link) == true) && contains(sawPages, link) != true && r4.MatchString(link) == true {
-			fmt.Println("link", link)
 			result = append(
 				result, link,
 			)

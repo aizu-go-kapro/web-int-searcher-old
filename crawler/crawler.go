@@ -1,10 +1,10 @@
 package crawler
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/aizu-go-kapro/web-int-searcher/crawler/page"
+	mgo "gopkg.in/mgo.v2"
 )
 
 var pages []page.Page
@@ -19,15 +19,22 @@ func Crawler() {
 		crawle(page.Url, page.Title)
 	}
 
-	fmt.Println(pages)
+	session, err := mgo.Dial("mongodb://localhost/test")
+	if err != nil {
+		panic(err)
+	}
+	defer session.Close()
+
+	c := session.DB("test").C("data")
+	for _, page := range pages {
+		err := c.Insert(&page)
+		if err != nil {
+			panic(err)
+		}
+	}
 }
 
 func crawle(url, title string) error {
-	//for _, swapage := range  sawPages {
-	//	if swapage == url {
-	//		return nil
-	//	}
-	//}
 	page := page.NewPage(url, title)
 	err := page.GetText()
 	if err != nil {
@@ -38,7 +45,6 @@ func crawle(url, title string) error {
 		return err
 	}
 	pages = append(pages, page)
-	// fmt.Println(pages)
 	if len(page.Tolink) == 0 {
 		return nil
 	}
