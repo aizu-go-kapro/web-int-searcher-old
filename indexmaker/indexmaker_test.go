@@ -38,8 +38,4 @@ func TestParseText(t *testing.T) {
 			}
 		})
 	}
-	// _, err := ParseText("noahは異常者です。なぜなら異常行動をするからです。")
-	// if err != nil {
-	// 	panic(err)
-	// }
 }
