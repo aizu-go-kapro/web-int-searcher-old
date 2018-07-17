@@ -5,6 +5,10 @@ import (
 )
 
 func TestCrawler(t *testing.T) {
-	Crawler()
+	_, err := Crawler()
+	if err != nil {
+		panic(err)
+	}
+	// log.Fatal(page)
 	_ = t
 }

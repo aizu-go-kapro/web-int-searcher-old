@@ -1,37 +1,34 @@
 package crawler
 
 import (
+	"fmt"
 	"log"
 
-	"github.com/aizu-go-kapro/web-int-searcher/crawler/page"
-	mgo "gopkg.in/mgo.v2"
+	"github.com/aizu-go-kapro/web-int-searcher/infrastructure/crawler/page"
+	uuid "github.com/satori/go.uuid"
 )
 
 var pages []page.Page
 
-func Crawler() {
+func Crawler() ([]page.Page, error) {
+
 	toppages, err := page.LoadTopPage()
 	if err != nil {
 		log.Println(err)
+		return nil, err
 	}
-
 	for _, page := range toppages {
 		crawle(page.Url, page.Title)
 	}
 
-	session, err := mgo.Dial("mongodb://localhost/test")
-	if err != nil {
-		panic(err)
-	}
-	defer session.Close()
-
-	c := session.DB("test").C("data")
-	for _, page := range pages {
-		err := c.Insert(&page)
+	for i := range pages {
+		u1, err := uuid.NewV4()
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
+		pages[i].Id = fmt.Sprint(u1)
 	}
+	return pages, nil
 }
 
 func crawle(url, title string) error {
@@ -50,8 +47,6 @@ func crawle(url, title string) error {
 	}
 	for _, pageurl := range page.Tolink {
 		crawle(pageurl, "")
-
 	}
-
 	return nil
 }
