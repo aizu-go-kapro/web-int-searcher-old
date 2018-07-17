@@ -17,19 +17,19 @@ type IndexCollection struct {
 }
 
 // NewIndexCollectionはdomain.IndexをNewIndexCollectionに変換します。
-func NewIndexCollection(b *domain.Index) (*IndexCollection, error) {
-	const errtag = " mongodb/index/NewEntity failed"
+func NewIndexCollection(i *domain.Index) (*IndexCollection, error) {
+	const errtag = " mongodb/index/NewIndexCollection failed"
 
 	return &IndexCollection{
-		Word:    b.Word,
-		PageIDs: b.PageIDs,
+		Word:    i.Word,
+		PageIDs: i.PageIDs,
 	}, nil
 }
 
 // Domainはdomain.Indexに変換します。
-func (e *IndexCollection) Domain() *domain.Index {
+func (i *IndexCollection) Domain() *domain.Index {
 	return &domain.Index{
-		Word:    e.Word,
-		PageIDs: e.PageIDs,
+		Word:    i.Word,
+		PageIDs: i.PageIDs,
 	}
 }
