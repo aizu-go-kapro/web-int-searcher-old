@@ -20,7 +20,7 @@ func NewPageColloction(p *domain.Page) (*PageCollection, error) {
 	}, nil
 }
 
-func (i *PageCollection) Domain() *domain.Page {
+func (p *PageCollection) Domain() *domain.Page {
 	return &domain.Page{
 		PageID: p.PageID,
 		URL:    p.URL,

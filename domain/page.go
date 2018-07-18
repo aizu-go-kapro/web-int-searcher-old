@@ -1,6 +1,8 @@
 package domain
 
-import mgo "gopkg.in/mgo.v2"
+import (
+	"gopkg.in/mgo.v2"
+)
 
 type (
 	Page struct {
@@ -11,12 +13,11 @@ type (
 	}
 
 	PageRepository interface {
-		SavePage(session *mgo.Session, page Page) error
-		SavePages(session *mgo.Session, pages []*Page) error
-		Get(session *mgo.Session, id string) (Page, error)
-		Update(session *mgo.Session, page Page) error
-		GetDocumentByURL(session *mgo.Session, url string) (Page, error)
-		GetFromCrawler() ([]Page, error)
+		SavePage(ms *mgo.Session, page Page) error
+		SavePages(ms *mgo.Session, pages []*Page) error
+		Get(ms *mgo.Session, id string) (Page, error)
+		Update(ms *mgo.Session, id string) error
+		GetDocumentByURL(ms *mgo.Session, url string) (Page, error)
 	}
 )
 

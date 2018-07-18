@@ -2,8 +2,7 @@ package index
 
 import (
 	"github.com/aizu-go-kapro/web-int-searcher/domain"
-	"github.com/aizu-go-kapro/web-int-searcher/lib/mongoutil"
-	"gopkg.in/mgo.v2/bson"
+	"gopkg.in/mgo.v2"
 )
 
 type Repository struct{}
@@ -14,7 +13,7 @@ func NewRepository() *Repository {
 
 // TODO: domainのindexに定義してあるIndexRepositoryインターフェースを実装する。(domain/index.go#16~)
 // イメージこのGetみたいな感じ。引数でmongoutil.Session渡されてるのが抽象化されてなくて微妙だけど、一旦これで
-func (r *Repository) Get(ms mongoutil.Session, i domain.Index) (Index, error) {
+func (r *Repository) Get(ms *mgo.Session, word string) (domain.Index, error) {
 	const errtag = "Repository.Get failed"
 	var index domain.Index
 	err := ms.C("index").Find(bson.M{"word": word}).One(&index)

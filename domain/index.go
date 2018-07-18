@@ -1,6 +1,8 @@
 package domain
 
-import mgo "gopkg.in/mgo.v2"
+import (
+	"gopkg.in/mgo.v2"
+)
 
 type (
 	// IndexはWordがどこに存在するかをまとめた索引
@@ -12,10 +14,9 @@ type (
 	}
 
 	IndexRepository interface {
-		Save(session *mgo.Session, i Index) error
-		Get(session *mgo.Session, i Index) (Index, error)
-		GestByWord(session *mgo.Session, word string) (Index, error)
-		Update(session *mgo.Session, i Index) error
+		Save(ms *mgo.Session, i Index) error
+		Get(ms *mgo.Session, word string) (*Index, error)
+		Update(ms *mgo.Session, i Index) error
 	}
 )
 
