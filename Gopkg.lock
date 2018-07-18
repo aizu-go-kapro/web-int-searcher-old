@@ -14,10 +14,22 @@
   version = "v1.0.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/bluele/mecab-golang"
+  packages = ["."]
+  revision = "ea8730ebba3459a29142f1149749250e6f187677"
+
+[[projects]]
   name = "github.com/pkg/errors"
   packages = ["."]
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
   version = "v0.8.0"
+
+[[projects]]
+  name = "github.com/satori/go.uuid"
+  packages = ["."]
+  revision = "f58768cc1a7a7e77a3bd49e98cdd21419399b6a3"
+  version = "v1.2.0"
 
 [[projects]]
   branch = "master"
@@ -74,6 +86,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a83addf38d99fd71895a74f1353d2b61f3d50556a94d010409d0d0be6acf8ce6"
+  inputs-digest = "2b6b2ca7f45a9f094cc054ead3097f7244bc9cf1af5792d45c7dc9cbb7b92972"
   solver-name = "gps-cdcl"
   solver-version = 1

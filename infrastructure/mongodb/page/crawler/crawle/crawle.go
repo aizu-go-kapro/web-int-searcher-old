@@ -46,10 +46,7 @@ type CrawlePage struct {
 }
 
 func NewPage(url, title string) (*CrawlePage, error) {
-	u1, err := uuid.NewV4()
-	if err != nil {
-		return nil, err
-	}
+	u1 := uuid.NewV4()
 	id := fmt.Sprint(u1)
 	return &CrawlePage{
 		id, url, title, "", nil, nil,

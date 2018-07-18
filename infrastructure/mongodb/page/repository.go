@@ -85,10 +85,7 @@ func (r *Repository) GetFromCrawler() ([]*domain.Page, error) {
 	}
 
 	for i := range pages {
-		u1, err := uuid.NewV4()
-		if err != nil {
-			return nil, err
-		}
+		u1 := uuid.NewV4()
 		pages[i].Id = fmt.Sprint(u1)
 	}
 
