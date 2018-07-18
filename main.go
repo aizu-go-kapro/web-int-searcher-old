@@ -5,11 +5,15 @@ import (
 )
 
 func main() {
-	bmApp := application.BuildingMachine(
-		// diして
+	
+
+	bmApp := application.NewBuildingMachine(
+		di.InjectDBnjectDB(),
+		di.InjectIndexRepository(),
+		di.InjectPageRepository()
 	)
 	
-	go bmApp
+	go bmApp.Run()
 
 	http.HandlFunc("/search", SearchHandler)
 	http.ListenAndServe(":3000", nil)

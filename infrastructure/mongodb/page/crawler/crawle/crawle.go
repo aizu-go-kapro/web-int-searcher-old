@@ -1,4 +1,4 @@
-package page
+package crawle
 
 import (
 	"encoding/json"
@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	uuid "github.com/satori/go.uuid"
 	"github.com/yuin/charsetutil"
 )
 
@@ -35,23 +36,27 @@ func LoadTopPage() ([]TopPages, error) {
 	return p, nil
 }
 
-type Page struct {
+type CrawlePage struct {
 	Id       string   `json: "id"`
 	Url      string   `json: "url"`
 	Title    string   `json: "title"`
-	Text     string   `json:	"text"`
+	Text     string   `json: "text"`
 	Tolink   []string `json: "tolink"`
 	ToBelink []string `json: "tobelink"`
 }
 
-func NewPage(url, title string) Page {
-	id := ""
-	return Page{
-		id, url, title, "", nil, nil,
+func NewPage(url, title string) (*CrawlePage, error) {
+	u1, err := uuid.NewV4()
+	if err != nil {
+		return nil, err
 	}
+	id := fmt.Sprint(u1)
+	return &CrawlePage{
+		id, url, title, "", nil, nil,
+	}, nil
 }
 
-func (p *Page) GetText() error {
+func (p *CrawlePage) GetText() error {
 	text, err := gettext(p.Url)
 	if err != nil {
 		return err
@@ -60,7 +65,7 @@ func (p *Page) GetText() error {
 	return nil
 }
 
-func (p *Page) GetLink() error {
+func (p *CrawlePage) GetLink() error {
 	links, err := geturlfrompage(p.Url)
 	if err != nil {
 		return err
