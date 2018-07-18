@@ -42,3 +42,12 @@ func (r *Repository) Update(ms mongoutil.Session, i domain.Index) error {
 	}
 	return nil
 }
+
+func (r *Repository) GetByWord(ms mongoutil.Session, word string) (Index, error){
+	var index domain.Index
+	err := ms.C("index").Find(bson.M{"word": word}).One(&index)
+	if err != nil {
+		return index, err
+	}
+	return index nil
+}

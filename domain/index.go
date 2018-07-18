@@ -16,6 +16,7 @@ type (
 	IndexRepository interface {
 		Save(ms mongoutil.Session, i Index) error
 		Get(ms mongoutil.Session, i Index) (Index, error)
+		GestByWord(ms mongoutil.Session, word string) (Index, error)
 		Update(ms mongoutil.Session, i Index) error
 	}
 )

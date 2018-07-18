@@ -36,12 +36,13 @@ func MakeIndex(pages []page.Page) error {
 		if err != nil {
 			return err
 		}
+
 		for _, page_word := range page_words {
-			index, err := mongo.GetIndex(page_word)
+			index, err := domain.GetByWord(ms, page_word)
 			if err != nil {
 				index.Word = page_word
 				index.PageIDs = append(index.PageIDs, page.Id)
-				err = mongo.SaveIndex(index)
+				err = domain.(index)
 				if err != nil {
 					return err
 				}
