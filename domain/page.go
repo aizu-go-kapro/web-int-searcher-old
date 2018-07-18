@@ -1,21 +1,17 @@
-package domain 
-
-import (
-
-)
+package domain
 
 type (
 	Page struct {
-		PageID	string
-		URL		string
-		Text 	string
+		PageID string
+		URL    string
+		Text   string
 	}
 
 	PageRepository interface {
 		SavePage(db *dbutil.DB, page Page) error
 		SavePages(db *dbutil.DB, pages []*Page) error
 		Get(db *dbutil.DB, id string) (Page, error)
-		Update(db *dbutil.DB, id string) error
+		Update(db *dbutil.DB, page Page) error
 		GetDocumentByURL(db *dbutil.DB, url string) (Page, error)
 	}
 )
@@ -23,7 +19,7 @@ type (
 func NewPage(pageID string, url string, text string) *Page {
 	return &Page{
 		PageID: pageID,
-		URL: url,
-		Text: text,
+		URL:    url,
+		Text:   text,
 	}
 }
