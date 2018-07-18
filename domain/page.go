@@ -16,7 +16,7 @@ type (
 		SavePage(ms *mgo.Session, page Page) error
 		SavePages(ms *mgo.Session, pages []*Page) error
 		Get(ms *mgo.Session, id string) (Page, error)
-		Update(ms *mgo.Session, page Page) error
+		Update(ms *mgo.Session, p Page) error
 		GetDocumentByURL(ms *mgo.Session, url string) (Page, error)
 		GetFromCrawler() ([]*Page, error)
 	}

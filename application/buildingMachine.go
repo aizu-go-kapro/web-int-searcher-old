@@ -55,7 +55,7 @@ func (bm *BuildingMachine) MakeIndex(pages []*domain.Page) error {
 			if err != nil {
 				index.Word = page_word
 				index.PageIDs = append(index.PageIDs, page.PageID)
-				err = domain.IndexRepository.Update(bm.IndexRepo, bm.DBSession, *index)
+				err = domain.IndexRepository.Save(bm.IndexRepo, bm.DBSession, *index)
 				if err != nil {
 					return err
 				}
