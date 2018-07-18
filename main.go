@@ -2,14 +2,18 @@ package main
 
 import (
 	"net/http"
+	"github.com/aizu-go-kapro/web-int-searcher/application"
+	"github.com/aizu-go-kapro/web-int-searcher/di"
 )
 
 func main() {
+	/*
 	bmApp := application.BuildingMachine(
 		// diして
 	)
 	
 	go bmApp
+	*/
 
 	http.HandlFunc("/search", SearchHandler)
 	http.ListenAndServe(":3000", nil)
@@ -17,9 +21,14 @@ func main() {
 
 
 func SearchHandler(w http.ResponseWriter, r *http.Request) {
-	res := appllication.SearchApp(
+	searchApp := appllication.NewSearchApp(
 		//repositoryとかDBのインスタンスをDIする
-		r,
+		di.InjectIndexRepository(),
+		di.InjectPageRepository(),
+		di.InjectDB(),
 	)
+	//TODO: 受け取ったクエリを文字列に
+	page := searchApp.Get(q)
+	// TODO: pageをjsonのレスポンスにする
 	fmt.Fprintf(w, res)
 }

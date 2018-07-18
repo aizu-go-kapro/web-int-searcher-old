@@ -1,9 +1,9 @@
 package di
 
 import (
-	"github.com/go-aizu-kapro/web-int-searcher/domain"
-	"github.com/go-aizu-kapro/web-int-searcher/infrasturcture/mongodb/index"
-	"github.com/go-aizu-kapro/web-int-searcher/infrasturcture/mongodb/page"
+	"github.com/aizu-go-kapro/web-int-searcher/domain"
+	"github.com/aizu-go-kapro/web-int-searcher/infrastructure/mongodb/index"
+	"github.com/aizu-go-kapro/web-int-searcher/infrastructure/mongodb/page"
 )
 
 var indexRepository domain.IndexRepository
@@ -24,6 +24,6 @@ func InjectPageRepository() domain.PageRepository {
 		return pageRepository
 	}
 
-	pageRepository = page.NewRepository
+	pageRepository = page.NewRepository()
 	return pageRepository
 }

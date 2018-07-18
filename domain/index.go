@@ -1,7 +1,7 @@
 package domain
 
 import (
-	"github.com/aizu-go-kapro/web-int-searcher/lib/mongoutil"
+	"gopkg.in/mgo.v2"
 )
 
 type (
@@ -14,9 +14,9 @@ type (
 	}
 
 	IndexRepository interface {
-		Save(ms mongoutil.Session, i Index) error
-		Get(ms mongoutil.Session, i Index) (Index, error)
-		Update(ms mongoutil.Session, i Index) error
+		Save(ms *mgo.Session, i Index) error
+		Get(ms *mgo.Session, word string) (*Index, error)
+		Update(ms *mgo.Session, i Index) error
 	}
 )
 

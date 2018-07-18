@@ -2,7 +2,7 @@ package page
 
 type Repository struct{}
 
-func (r *Repository) NewRepository() {
+func (r *Repository) NewRepository() *Repository {
 	return &Repository{}
 }
 
