@@ -1,45 +1,48 @@
 package application
 
 import (
+	"log"
+	"strings"
+
 	"github.com/aizu-go-kapro/web-int-searcher/domain"
+	mecab "github.com/bluele/mecab-golang"
 	mgo "gopkg.in/mgo.v2"
 )
 
-type BuildingMachine {
+type BuildingMachine struct {
+	IndexRepo domain.IndexRepository
+	PageRepo  domain.PageRepository
 	DBSession *mgo.Session
-    IndexRepo domain.IndexRepository
-	PageRepo domain.PageRepository
 }
 
-func NewBuildingMachine(sess *mgo.Session, indexRepo domain.IndexRepository, pageRepo domain.PageRepository) {
-	return &struct{
-		sess,
+func NewBuildingMachine(sess *mgo.Session, indexRepo domain.IndexRepository, pageRepo domain.PageRepository) *BuildingMachine {
+	return &BuildingMachine{
 		indexRepo,
-		pageRepo
+		pageRepo,
+		sess,
 	}
 }
 
 func (bm *BuildingMachine) Run() {
 	log.Println("start:\tindex_building_machine")
 	log.Println("moving:\tcrawler")
-	pages, err := crawler.Crawler()
+	pages, err := domain.PageRepository.GetFromCrawler(bm.PageRepo)
 	if err != nil {
 		panic(err)
 	}
 
 	log.Println("finished:\tcrawler")
 	log.Println("start:\tindex_maker")
-	err = MakeIndex(pages)
+	err = bm.MakeIndex(pages)
 	if err != nil {
 		panic(err)
 	}
 	log.Println("finished:\tindex_maker")
 	log.Println("start:\tdocuments_maker")
 
-	return nil
 }
 
-func MakeIndex(pages []page.Page) error {
+func (bm *BuildingMachine) MakeIndex(pages []*domain.Page) error {
 	for i, page := range pages {
 		log.Println(i*100/int(len(pages)), "%")
 		page_words, err := ParseText(page.Text)
@@ -48,18 +51,18 @@ func MakeIndex(pages []page.Page) error {
 		}
 
 		for _, page_word := range page_words {
-			index, err := domain.GetByWord(ms, page_word)
+			index, err := domain.IndexRepository.Get(bm.IndexRepo, bm.DBSession, page_word)
 			if err != nil {
 				index.Word = page_word
-				index.PageIDs = append(index.PageIDs, page.Id)
-				err = domain.(index)
+				index.PageIDs = append(index.PageIDs, page.PageID)
+				err = domain.IndexRepository.Update(bm.IndexRepo, bm.DBSession, *index)
 				if err != nil {
 					return err
 				}
 			} else {
-				index.PageIDs = append(index.PageIDs, page.Id)
+				index.PageIDs = append(index.PageIDs, page.PageID)
 
-				err = mongo.UpdateIdex(index)
+				err = domain.IndexRepository.Update(bm.IndexRepo, bm.DBSession, *index)
 				if err != nil {
 					return err
 				}

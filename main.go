@@ -7,9 +7,6 @@ import (
 )
 
 func main() {
-<<<<<<< HEAD
-	
-
 	bmApp := application.NewBuildingMachine(
 		di.InjectDBnjectDB(),
 		di.InjectIndexRepository(),

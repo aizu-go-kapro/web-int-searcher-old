@@ -14,13 +14,13 @@ import (
 
 type Repository struct{}
 
-func (r *Repository) NewRepository() *Repository {
+func NewRepository() *Repository {
 	return &Repository{}
 }
 
 // TODO: domain/page.go PageInterfaceを実装する。
 
-func (r *Repository) SavePage(session mgo.Session, p domain.Page) error {
+func (r *Repository) SavePage(session *mgo.Session, p domain.Page) error {
 	c := session.DB("test").C("page")
 	err := c.Insert(&p)
 	if err != nil {
@@ -29,10 +29,9 @@ func (r *Repository) SavePage(session mgo.Session, p domain.Page) error {
 	return nil
 }
 
-func (r *Repository) SavePages(session mgo.Session, pages []domain.Page) error {
-	c := session.DB("test").C("page")
-	for _, page := range page {
-		err := r.SavePage(ms, page)
+func (r *Repository) SavePages(session *mgo.Session, pages []*domain.Page) error {
+	for _, page := range pages {
+		err := r.SavePage(session, *page)
 		if err != nil {
 			return err
 		}
@@ -40,7 +39,7 @@ func (r *Repository) SavePages(session mgo.Session, pages []domain.Page) error {
 	return nil
 }
 
-func (r *Repository) Get(session mgo.Session, id string) (domain.Page, error) {
+func (r *Repository) Get(session *mgo.Session, id string) (domain.Page, error) {
 	var page domain.Page
 	err := session.DB("test").C("page").Find(bson.M{"pageID": id}).One(&page)
 	if err != nil {
@@ -50,10 +49,10 @@ func (r *Repository) Get(session mgo.Session, id string) (domain.Page, error) {
 	return page, nil
 }
 
-func (r *Repository) Update(session mgo.Session, p domain.Page) error {
+func (r *Repository) Update(session *mgo.Session, p domain.Page) error {
 	c := session.DB("test").C("page")
 	selector := bson.M{"pageID": p.PageID}
-	err = c.Update(selector, document)
+	err := c.Update(selector, p)
 	if err != nil {
 		return err
 	}
@@ -61,7 +60,7 @@ func (r *Repository) Update(session mgo.Session, p domain.Page) error {
 	return nil
 }
 
-func (r *Repository) GetDocumentByURL(session mgo.Session, url string) (domain.Page, error) {
+func (r *Repository) GetDocumentByURL(session *mgo.Session, url string) (domain.Page, error) {
 	var page domain.Page
 	err := session.DB("test").C("page").Find(bson.M{"url": url}).One(&page)
 	if err != nil {
@@ -95,12 +94,14 @@ func (r *Repository) GetFromCrawler() ([]*domain.Page, error) {
 
 	result_page := []*domain.Page{}
 	for _, page := range pages {
-		result_page = append(result_page, domain.NewPage(
-			page.Id,
-			page.Url,
-			page.Text,
-			page.Title,
-		))
+		result_page = append(
+			result_page,
+			domain.NewPage(
+				page.Id,
+				page.Url,
+				page.Text,
+				page.Title,
+			))
 	}
 
 	return result_page, nil
