@@ -10,14 +10,14 @@ type PageCollection struct {
 	Text   string `json:"text"`
 }
 
-func NewPageColloction(p *domain.Page) (*PageCollection, error) {
+func NewPageCollection(p *domain.Page) *PageCollection {
 	const errtag = "mongodb/page/NewPageCollection failed"
 
 	return &PageCollection{
 		PageID: p.PageID,
 		URL:    p.URL,
 		Text:   p.Text,
-	}, nil
+	}
 }
 
 func (p *PageCollection) Domain() *domain.Page {
