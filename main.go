@@ -29,12 +29,13 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 		di.InjectPageRepository(),
 		di.InjectDB(),
 	)
-
-	page, err := searchApp.Get(q)
+	// セキュリティがやばたにえん
+	q := r.URL.RawQuery
+	pages, err := searchApp.Get(q)
 	if err != nil {
 		log.Fatal(err)
 	}
-	res, err := json.Marshal(page)
+	res, err := json.Marshal(pages)
 	if err != nil {
 		log.Fatal(err)
 	}

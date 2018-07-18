@@ -25,37 +25,45 @@ func NewSearchApp(
 	}
 }
 
-func (s *SearchApp) Get(query string) (pages []*mpage.PageCollection, err error) {
+func (s *SearchApp) Get(query string) ([][]*mpage.PageCollection, error) {
 	const errtag = "SearchApp.Get() failed"
 
-	var word string
-	var pc *mpage.PageCollection
-	var page domain.Page
-	var index *domain.Index
-
-	word, err = parseQuery(query)
+	words, err := parseQuery(query)
 	if err != nil {
 		return nil, errors.Wrap(err, errtag)
 	}
 
-	index, err = s.IndexRepo.Get(s.Session, word)
-	if err != nil {
-		return nil, errors.Wrap(err, errtag)
-	}
-
-	for _, id := range index.PageIDs {
-		page, err = s.PageRepo.Get(s.Session, id)
-		pc = mpage.NewPageCollection(&page)
-		pages = append(pages, pc)
+	indexs := make([]*domain.Index, len(words))
+	for _, word := range words {
+		index, err := s.IndexRepo.Get(s.Session, word)
+		if err != nil {
+			return nil, errors.Wrap(err, errtag)
+		}
+		indexs = append(indexs, index)
 	}
 	if err != nil {
 		return nil, errors.Wrap(err, errtag)
+	}
+	pages := make([][]*mpage.PageCollection, len(indexs))
+	for i, index := range indexs {
+		for _, id := range index.PageIDs {
+			page, err := s.PageRepo.Get(s.Session, id)
+			if err != nil {
+				return nil, errors.Wrap(err, errtag)
+			}
+			pc := mpage.NewPageCollection(&page)
+			pages[i] = append(pages[i], pc)
+		}
+		if err != nil {
+			return nil, errors.Wrap(err, errtag)
+		}
 	}
 
 	return pages, nil
 }
 
 //
-func parseQuery(query string) (string, error) {
-	return "", nil
+func parseQuery(query string) ([]string, error) {
+
+	return nil, nil
 }
