@@ -30,7 +30,7 @@ func NewSearchApp(
 
 func (s *SearchApp) Get(query url.Values) ([][]*mpage.PageCollection, error) {
 	const errtag = "SearchApp.Get() failed"
-	log.Println("query ", query)
+
 	words, err := parseQuery(query)
 	if err != nil {
 		return nil, errors.Wrap(err, errtag)
@@ -42,6 +42,7 @@ func (s *SearchApp) Get(query url.Values) ([][]*mpage.PageCollection, error) {
 		if err != nil {
 			return nil, errors.Wrap(err, errtag)
 		}
+		log.Println(indexs)
 		indexs = append(indexs, index)
 	}
 	if err != nil {

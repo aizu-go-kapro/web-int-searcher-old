@@ -30,6 +30,9 @@ func (bm *BuildingMachine) Run() {
 	if err != nil {
 		panic(err)
 	}
+	for _, page := range pages {
+		log.Println(*page)
+	}
 
 	log.Println("finished:\tcrawler")
 	log.Println("start:\tindex_maker")
